@@ -1,0 +1,3 @@
+pno=1
+langCode=en_US
+text=This coffee cup is white. White coffee cups are clearly superior to other colours.

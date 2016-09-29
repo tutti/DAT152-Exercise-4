@@ -1,0 +1,3 @@
+pno=1
+langCode=no_NO
+text=Dette er en hvit kopp. Hvite kopper er mye bedre enn alle andre farger. Kjøp hvit.

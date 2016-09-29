@@ -1,0 +1,9 @@
+.product {
+    clear: both;
+}
+    .product-left {
+        float: left;
+    }
+        .product-left img {
+            width: 200px;
+        }

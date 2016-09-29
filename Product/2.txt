@@ -1,0 +1,3 @@
+pName=Black Coffee Cup (TM)
+priceInEuro=6.5
+imageURL=/images/blackcup.png

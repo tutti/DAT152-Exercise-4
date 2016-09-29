@@ -1,0 +1,3 @@
+pno=1
+langCode=es_ES
+text=Taza de café negro. Limpiar las tazas blancas de café ver otros colores.
