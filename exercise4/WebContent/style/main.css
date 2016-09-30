@@ -1,0 +1,17 @@
+.clearfloat {
+    clear: both;
+}
+
+#carttable {
+    border-collapse: collapse;
+}
+    #carttable td, #carttable th {
+        border: 1px solid #222;
+    }
+
+.product-left {
+    float: left;
+}
+    .product-left img {
+        width: 200px;
+    }

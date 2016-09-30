@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.Config;
 
+import helpers.Cart;
 import helpers.Locales;
 import helpers.Session;
 import model.ModelCollection;
@@ -19,16 +21,16 @@ import models.Description;
 import models.Product;
 
 /**
- * Servlet implementation class ProductPage
+ * Servlet implementation class CartPage
  */
-@WebServlet("/products")
-public class ProductPage extends HttpServlet {
-	private static final long serialVersionUID = -2909259842576625375L;
+@WebServlet("/cart")
+public class CartPage extends HttpServlet {
+	private static final long serialVersionUID = -5387745268745410999L;
 
 	/**
      * @see HttpServlet#HttpServlet()
      */
-    public ProductPage() {
+    public CartPage() {
         super();
     }
 
@@ -54,11 +56,7 @@ public class ProductPage extends HttpServlet {
 			
 			// Load the resource bundle and make it available to the view
 			Config.set( session.getSession(), Config.FMT_LOCALE, l );
-			
-			// Load the product list
-			ModelCollection<Product> products = new ModelCollection<Product>(Product.class);
-			request.setAttribute("products", products);
-			
+
 			// A list of language codes to look for descriptions for
 			List<String> codes = new ArrayList<String>();
 			if (!l.getCountry().equals("")) {
@@ -73,7 +71,13 @@ public class ProductPage extends HttpServlet {
 			codes.add(l.getLanguage());
 			codes.add("en_US");
 			
-			for (Product p : products) {
+			Cart cart = session.getCart();
+			request.setAttribute("cart", cart);
+			
+			double total = 0;
+			
+			for (Map.Entry<Product, Integer> e : cart) {
+				Product p = e.getKey();
 				ModelCollection<Description> allDescriptions = new ModelCollection<Description>(Description.class).where((d) -> (d.pno == p.pno));
 				for (String code : codes) {
 					ModelCollection<Description> tryDescriptions = allDescriptions.where((d) -> d.langCode.equals(code));
@@ -85,9 +89,13 @@ public class ProductPage extends HttpServlet {
 				if (p.description == null) {
 					p.description = Description.NONE;
 				}
+				
+				total += p.getPrice() * e.getValue();
 			}
 			
-			request.getRequestDispatcher("WEB-INF/ProductPage.jsp").forward(request, response);
+			request.setAttribute("total", total);
+			
+			request.getRequestDispatcher("WEB-INF/CartPage.jsp").forward(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -97,19 +105,6 @@ public class ProductPage extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//doGet(request, response);
-		try {
-			Session session = new Session(request);
-			
-			int pno = Integer.parseInt(request.getParameter("pno"));
-			
-			session.getCart().addItem(new Product(pno));
-			
-			response.sendRedirect("products");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 }
