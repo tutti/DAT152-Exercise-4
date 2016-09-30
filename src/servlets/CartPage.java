@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -37,58 +38,67 @@ public class CartPage extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Session session = new Session(request);
-		
-		// If the user changed locale, record the change
-		String lang = request.getParameter("lang");
-		if (lang != null) {
-			String[] split = lang.split("_");
-			session.setLocale(new Locale(split[0], split[1]));
-		}
-		
-		// Get the locale from the user
-		Locale l = session.getLocale();
-		request.setAttribute("locales", Locales.locales);
-		Locale.setDefault(l); // Just so Java defaults to the actual default,
-						// rather than the system language. Seriously, Java?
-		
-		// Load the resource bundle and make it available to the view
-		//ResourceBundle rb = ResourceBundle.getBundle("bundles.CoffeeShop", l);
-		//request.setAttribute("L", rb);
-		Config.set( session.getSession(), Config.FMT_LOCALE, l );
+		try {
+			Session session = new Session(request);
+			
+			// If the user changed locale, record the change
+			String lang = request.getParameter("lang");
+			if (lang != null) {
+				String[] split = lang.split("_");
+				session.setLocale(new Locale(split[0], split[1]));
+			}
+			
+			// Get the locale from the user
+			Locale l = session.getLocale();
+			request.setAttribute("locales", Locales.locales);
+			Locale.setDefault(l); // Just so Java defaults to the actual default,
+							// rather than the system language. Seriously, Java?
+			
+			// Load the resource bundle and make it available to the view
+			Config.set( session.getSession(), Config.FMT_LOCALE, l );
 
-		// A list of language codes to look for descriptions for
-		List<String> codes = new ArrayList<String>();
-		if (!l.getCountry().equals("")) {
-			if (!l.getVariant().equals("")) {
-				codes.add(l.getLanguage()+"_"+l.getCountry()+"_"+l.getVariant());
-			}
-			codes.add(l.getLanguage()+"_"+l.getCountry());
-		}
-		if (!l.getVariant().equals("")) {
-			codes.add(l.getLanguage()+"_"+l.getVariant());
-		}
-		codes.add(l.getLanguage());
-		codes.add("en_US");
-		
-		for (Product p : products) {
-			ModelCollection<Description> allDescriptions = new ModelCollection<Description>(Description.class).where((d) -> (d.pno == p.pno));
-			for (String code : codes) {
-				ModelCollection<Description> tryDescriptions = allDescriptions.where((d) -> d.langCode.equals(code));
-				if (tryDescriptions.size() > 0) {
-					p.description = tryDescriptions.get(0);
-					break;
+			// A list of language codes to look for descriptions for
+			List<String> codes = new ArrayList<String>();
+			if (!l.getCountry().equals("")) {
+				if (!l.getVariant().equals("")) {
+					codes.add(l.getLanguage()+"_"+l.getCountry()+"_"+l.getVariant());
 				}
+				codes.add(l.getLanguage()+"_"+l.getCountry());
 			}
-			if (p.description == null) {
-				p.description = Description.NONE;
+			if (!l.getVariant().equals("")) {
+				codes.add(l.getLanguage()+"_"+l.getVariant());
 			}
+			codes.add(l.getLanguage());
+			codes.add("en_US");
+			
+			Cart cart = session.getCart();
+			request.setAttribute("cart", cart);
+			
+			double total = 0;
+			
+			for (Map.Entry<Product, Integer> e : cart) {
+				Product p = e.getKey();
+				ModelCollection<Description> allDescriptions = new ModelCollection<Description>(Description.class).where((d) -> (d.pno == p.pno));
+				for (String code : codes) {
+					ModelCollection<Description> tryDescriptions = allDescriptions.where((d) -> d.langCode.equals(code));
+					if (tryDescriptions.size() > 0) {
+						p.description = tryDescriptions.get(0);
+						break;
+					}
+				}
+				if (p.description == null) {
+					p.description = Description.NONE;
+				}
+				
+				total += p.getPrice() * e.getValue();
+			}
+			
+			request.setAttribute("total", total);
+			
+			request.getRequestDispatcher("WEB-INF/CartPage.jsp").forward(request, response);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
-		Cart cart = session.getCart();
-		request.setAttribute("cart", cart);
-		
-		request.getRequestDispatcher("WEB-INF/CartPage.jsp").forward(request, response);
 	}
 
 	/**

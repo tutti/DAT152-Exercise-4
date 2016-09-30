@@ -17,7 +17,6 @@ public abstract class Model {
 	public abstract void load(int index) throws Exception;
 	public abstract void save() throws Exception;
 	public static List<Integer> getIndices(@SuppressWarnings("rawtypes") Class c) throws Exception {
-		// TODO
 		throw new Exception("getIndices() has not been implemented for this class.");
 	}
 }

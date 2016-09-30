@@ -8,14 +8,25 @@
     <short-name>coffee-tags</short-name>
     <uri>coffee-tags</uri>
     <tag>
-        <description>Prints a product</description>
-        <name>product</name>
-        <tag-class>tags.DisplayProductTag</tag-class>
-        <body-content>empty</body-content>
+        <description>Prints a copyright message</description>
+        <name>copyright</name>
+        <tag-class>tags.CopyrightTag</tag-class>
+        <body-content>scriptless</body-content>
         <attribute>
-            <name>product</name>
+            <name>since</name>
             <required>true</required>
-            <rtexprvalue>true</rtexprvalue>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Shortens a text if it's longer than a given limit (default 10).</description>
+        <name>shorttext</name>
+        <tag-class>tags.ShortTextTag</tag-class>
+        <body-content>scriptless</body-content>
+        <attribute>
+            <name>maxchars</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
         </attribute>
     </tag>
 </taglib>

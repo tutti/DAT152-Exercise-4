@@ -20,17 +20,24 @@
         <form action="/Exercise_4_-_h145157/products" method="post">
             <c:forEach items="${products.getObjects()}" var="product">
             <div class="product">
+                <h3>${product.pname}</h3>
                 <div class="product-left">
                     <img src="/Exercise_4_-_h145157/${product.imageURL}" /><br>
                 </div>
                 <div class="product-right">
                     <span><fmt:message key="name" bundle="${messages}" />: ${product.pname}</span><br />
-                    <span><fmt:message key="price" bundle="${messages}" />: ${product.priceInEuro}</span><br />
+                    <span><fmt:message key="price" bundle="${messages}" />: <fmt:formatNumber type="currency" value="${entry.getKey().price}" /></span><br />
                     <span><fmt:message key="description" bundle="${messages}" />: ${product.description.text}</span><br />
                     <button name="pno" value="${product.pno}"><fmt:message key="addToCart" bundle="${messages}" /></button>
                 </div>
             </div>
+            <div class="clearfloat"></div>
             </c:forEach>
         </form>
+        <p>
+            <a href="/Exercise_4_-_h145157/home"><fmt:message key="home" bundle="${messages}" /></a>
+            <a href="/Exercise_4_-_h145157/cart"><fmt:message key="cart" bundle="${messages}" /></a>
+        </p>
+        <em><cof:copyright since="2008">HiB</cof:copyright></em>
     </body>
 </html>

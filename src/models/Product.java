@@ -1,5 +1,6 @@
 package models;
 
+import helpers.Locales;
 import model.HardcodedModel;
 
 public class Product extends HardcodedModel {
@@ -54,6 +55,10 @@ public class Product extends HardcodedModel {
 		// to access "product.pName", this would complain that the field wasn't found.
 		// This, however, works. Seriously, Java?
 		return pName;
+	}
+
+	public double getPrice() {
+		return Locales.convertPrice(this);
 	}
 	
 	public double getPriceInEuro() {

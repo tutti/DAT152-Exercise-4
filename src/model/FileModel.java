@@ -25,10 +25,6 @@ public abstract class FileModel extends Model {
 		in.close();
 	}
 	
-	public final void save() {
-		// TODO
-	}
-	
 	public final static List<Integer> getIndices(@SuppressWarnings("rawtypes") Class c) {
 		List<Integer> indices = new ArrayList<Integer>();
 		String cn = c.getSimpleName();

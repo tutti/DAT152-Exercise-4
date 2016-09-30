@@ -32,8 +32,8 @@ public class Session {
 		if (locale == null) {
 			// If not, get the locale from the HTTP header
 			Enumeration<Locale> preferredLocales = requestObj.getLocales();
-			if (preferredLocales.hasMoreElements())
-				locale = preferredLocales.nextElement();
+			while (locale == null && preferredLocales.hasMoreElements())
+				locale = Locales.bestMatch(preferredLocales.nextElement());
 		}
 		
 		if (locale == null) {

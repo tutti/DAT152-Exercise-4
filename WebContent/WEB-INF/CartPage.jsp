@@ -17,7 +17,7 @@
         </c:forEach>
 
         <h1><fmt:message key="cart" bundle="${messages}" /></h1>
-        <table>
+        <table id="carttable">
             <tr>
                 <th><fmt:message key="name" bundle="${messages}" /></th>
                 <th><fmt:message key="description" bundle="${messages}" /></th>
@@ -28,13 +28,21 @@
             <c:forEach items="${cart.getEntryList()}" var="entry">
             <tr>
                 <td>${entry.getKey().pname}</td>
-                <td>${entry.getKey().description.text}</td>
-                <td>${entry.getKey().priceInEuro}</td>
+                <td><cof:shorttext maxchars="25">${entry.getKey().description.text}</cof:shorttext></td>
+                <td><fmt:formatNumber type="currency" value="${entry.getKey().price}" /></td>
                 <td>${entry.getValue()}</td>
-                <td>TBD</td>
+                <td><fmt:formatNumber type="currency" value="${entry.getKey().price * entry.getValue()}" /></td>
             </tr>
-
             </c:forEach>
+            <tr>
+                <td colspan="4"><fmt:message key="totalamount" bundle="${messages}" />:</td>
+                <td><fmt:formatNumber type="currency" value="${total}" /></td>
+            </tr>
         </table>
+        <p>
+            <a href="/Exercise_4_-_h145157/home"><fmt:message key="home" bundle="${messages}" /></a>
+            <a href="/Exercise_4_-_h145157/products"><fmt:message key="products" bundle="${messages}" /></a>
+        </p>
+        <em><cof:copyright since="2008">HiB</cof:copyright></em>
     </body>
 </html>
